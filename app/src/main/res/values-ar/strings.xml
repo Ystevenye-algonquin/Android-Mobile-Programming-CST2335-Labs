@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Android Labs</string>
     <string name="hello_message">مرحبا!</string>
     <string name="ButtonText">أنا كبسة</string>
+    <string name="here_are_my_widgets">هذه هي مجموعاتي</string>
+    <string name="ButtonText1">كبسة</string>
+    <string name="CheckText">علّم هنا !</string>
+    <string name="SwitchText">شغّل أو اطفئ</string>
+    <string name="HintText">اكتب جوابك هنا</string>
 </resources>
