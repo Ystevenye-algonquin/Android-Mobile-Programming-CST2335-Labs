@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Android Labs</string>
+    <string name="app_name">مختبرات أندرويد</string>
     <string name="hello_message">مرحبا!</string>
     <string name="ButtonText">أنا كبسة</string>
     <string name="here_are_my_widgets">هذه هي مجموعاتي</string>
