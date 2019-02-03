@@ -1,15 +1,52 @@
 package com.example.androidlabs;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
+    EditText emailInput1;
+    Button  loginButton;
+    SharedPreferences sp;
+    SharedPreferences.Editor edit;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_linear);
+//        setContentView(R.layout.activity_main_linear);
 //        setContentView(R.layout.activity_main_grid);
 //        setContentView(R.layout.activity_main_relative);
+        setContentView(R.layout.activity_login);
+
+
+        emailInput1 = (EditText)findViewById(R.id.emailInput1);
+        Button  loginButton = (Button) findViewById(R.id.button2);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent = new Intent(getApplicationContext(),ProfileActivity.class);
+                startActivity(intent);
+
+
     }
+
+    protected void onPause(View view){
+        edit = sp.edit();
+        sp = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        intent.putExtra("emailAddress",emailInput1.getText().toString());
+                edit.putString("emailInput1",emailInput1.getText().toString());
+                edit.commit();
+            }
+        });
+
+
+    }
+
+
 }

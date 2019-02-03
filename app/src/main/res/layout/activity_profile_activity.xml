@@ -12,7 +12,7 @@
         android:layout_weight="1"
         android:orientation="horizontal"
         android:text="@string/yourprofile"
-        android:textSize="25dp">
+        android:textSize="18sp">
 
     </TextView>
 
@@ -23,18 +23,19 @@
         android:layout_weight="1"
         android:orientation="horizontal"
         android:text="@string/yourname"
-        android:textSize="25dp">
+        android:textSize="14sp">
 
     </TextView>
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/nameInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10"
-        android:inputType="textEmailAddress"
-        android:hint="@string/hint_name" />
+        android:hint="@string/hint_name"
+        android:inputType="textEmailAddress" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,17 +43,19 @@
         android:layout_weight="1"
         android:orientation="horizontal"
         android:text="@string/youremail"
-        android:textSize="25dp">
+        android:textSize="14sp">
 
     </TextView>
+
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/emailInput2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10"
         android:inputType="textEmailAddress"
-        android:hint="@string/hint_email1" />
+        android:hint="@string/hint_email"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -60,9 +63,18 @@
         android:layout_weight="1"
         android:orientation="horizontal"
         android:text="@string/yourpicture"
-        android:textSize="25dp">
+        android:textSize="20sp">
 
     </TextView>
+
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@android:drawable/picture_frame" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -70,41 +82,7 @@
         android:layout_weight="1"
         android:orientation="horizontal"
         android:text="@string/click"
-        android:textSize="25dp">
+        android:textSize="15sp">
 
     </TextView>
-
-
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="fill"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:text="@string/password"
-        android:textSize="30dp">
-
-    </TextView>
-
-
-
-
-    <EditText
-        android:id="@+id/editText1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:inputType="textPassword"
-        />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="fill"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:text="@string/ButtonText2" />
 </LinearLayout>
