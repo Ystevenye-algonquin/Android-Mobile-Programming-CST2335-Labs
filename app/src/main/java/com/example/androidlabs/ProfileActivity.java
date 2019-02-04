@@ -29,6 +29,8 @@ public class ProfileActivity extends AppCompatActivity {
 //        setContentView(R.layout.activity_login);
         setContentView(R.layout.activity_profile_activity);
 
+        Log.e(ACTIVITY_NAME, "In function:"+"onCreate Function");
+
         emailInput2 = (EditText) findViewById(R.id.emailInput2);
         final Intent intent = getIntent();
         String value = intent.getStringExtra("emailAddress");
