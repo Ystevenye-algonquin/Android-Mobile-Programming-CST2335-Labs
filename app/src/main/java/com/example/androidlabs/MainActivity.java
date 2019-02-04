@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
             intent = new Intent(MainActivity.this, ProfileActivity.class);
             intent.putExtra("emailAddress",emailInput1.getText().toString());
             startActivity(intent);
+
         });
     }
 
