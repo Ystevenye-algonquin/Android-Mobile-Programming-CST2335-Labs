@@ -11,9 +11,9 @@ import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
     EditText emailInput1;
-    Button  loginButton;
+    Button loginButton;
     SharedPreferences sp;
-    SharedPreferences.Editor edit;
+
     Intent intent;
 
     @Override
@@ -24,29 +24,38 @@ public class MainActivity extends AppCompatActivity {
 //        setContentView(R.layout.activity_main_relative);
         setContentView(R.layout.activity_login);
 
+        emailInput1 = (EditText) findViewById(R.id.emailInput1);
+        loginButton = (Button) findViewById(R.id.button2);
 
-        emailInput1 = (EditText)findViewById(R.id.emailInput1);
-        Button  loginButton = (Button) findViewById(R.id.button2);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent = new Intent(getApplicationContext(),ProfileActivity.class);
-                startActivity(intent);
+        sp = getSharedPreferences("emailInput1", Context.MODE_PRIVATE);
 
+        String emailText = sp.getString("emailAddress", "");
+        emailInput1.setText(emailText);
 
-    }
+//        loginButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                intent = new Intent(MainActivity.this, ProfileActivity.class);
+//                intent.putExtra("emailAddress", emailInput1.getText().toString());
+//                startActivity(intent);
+//            }
+//        });
 
-    protected void onPause(View view){
-        edit = sp.edit();
-        sp = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        intent.putExtra("emailAddress",emailInput1.getText().toString());
-                edit.putString("emailInput1",emailInput1.getText().toString());
-                edit.commit();
-            }
+        loginButton.setOnClickListener(e->{
+            intent = new Intent(MainActivity.this, ProfileActivity.class);
+            intent.putExtra("emailAddress",emailInput1.getText().toString());
+            startActivity(intent);
         });
+    }
+
+        protected void onPause () {
+            super.onPause();
+            SharedPreferences.Editor edit = sp.edit();
+            intent.putExtra("emailAddress", emailInput1.getText().toString());
+            edit.putString("emailInput1", emailInput1.getText().toString());
+            edit.commit();
+        }
 
 
     }
 
-
-}

@@ -29,11 +29,17 @@ public class ProfileActivity extends AppCompatActivity {
 //        setContentView(R.layout.activity_login);
         setContentView(R.layout.activity_profile_activity);
 
-
-        emailInput2 = (TextView) findViewById(R.id.emailInput2);
-        SharedPreferences shardEmail = getSharedPreferences("savedEmail",Context.MODE_PRIVATE);
-        String value = shardEmail.getString("emailInput1", emailInput2.getText().toString());
+        emailInput2 = (EditText) findViewById(R.id.emailInput2);
+        final Intent intent = getIntent();
+        String value = intent.getStringExtra("emailAddress");
         emailInput2.setText(value);
+
+
+//        emailInput2 = (TextView) findViewById(R.id.emailInput2);
+//        SharedPreferences shardEmail = getSharedPreferences("savedEmail",Context.MODE_PRIVATE);
+//        String value = shardEmail.getString("emailInput1", emailInput2.getText().toString());
+//        emailInput2.setText(value);
+//
 
 
         imageButton2 = (ImageButton) findViewById(R.id.imageButton2);
