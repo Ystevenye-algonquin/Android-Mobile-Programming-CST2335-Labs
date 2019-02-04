@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         emailInput1 = (EditText) findViewById(R.id.emailInput1);
         loginButton = (Button) findViewById(R.id.button2);
 
-        sp = getSharedPreferences("emailInput1", Context.MODE_PRIVATE);
+        sp = getSharedPreferences("emailAddress", Context.MODE_PRIVATE);
 
         String emailText = sp.getString("emailAddress", "");
         emailInput1.setText(emailText);
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             super.onPause();
             SharedPreferences.Editor edit = sp.edit();
             intent.putExtra("emailAddress", emailInput1.getText().toString());
-            edit.putString("emailInput1", emailInput1.getText().toString());
+            edit.putString("emailAddress", emailInput1.getText().toString());
             edit.commit();
         }
 
