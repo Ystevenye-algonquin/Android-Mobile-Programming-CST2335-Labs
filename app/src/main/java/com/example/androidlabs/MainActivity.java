@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause () {
         super.onPause();
         SharedPreferences.Editor edit = sp.edit();
-        intent.putExtra("emailAddress", emailInput1.getText().toString());
         edit.putString("emailAddress", emailInput1.getText().toString());
         edit.commit();
     }
