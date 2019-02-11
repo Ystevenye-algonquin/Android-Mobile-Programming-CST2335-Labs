@@ -31,6 +31,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     EditText text;
     SQLiteDatabase db;
     MyDatabaseOpenHelper dbOpener;
+    SimpleCursorAdapter simplecursor;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -44,15 +45,20 @@ public class ChatRoomActivity extends AppCompatActivity {
 
 
         //get a database:
-        dbOpener = new MyDatabaseOpenHelper(this);
+         dbOpener = new MyDatabaseOpenHelper(this);
          db = dbOpener.getWritableDatabase();
-
 
         //query all the results from the database:
         String [] columns = {MyDatabaseOpenHelper.COL_ID, MyDatabaseOpenHelper.COL_SENT,MyDatabaseOpenHelper.COL_RECEIVED, MyDatabaseOpenHelper.COL_TEXT_MESSAGE};
         Cursor results = db.query(false, MyDatabaseOpenHelper.TABLE_NAME, columns, null, null, null, null, null, null);
-        // THE XML DEFINED VIEWS WHICH THE DATA WILL BE BOUND TO
-        int[] to = new int[] { R.id.left_row_text, R.id.right_row_text };
+
+
+//**************************************************************
+        int[] to = new int[]{ R.id.left_row_text, R.id.right_row_text };
+        simplecursor = new SimpleCursorAdapter (this, android.R.layout.simple_list_item_1, results, columns, to, 0);
+        mListView.setAdapter(simplecursor);
+//**************************************************************
+
 
         //find the column indices:
         int sent_ColumnIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_SENT);
@@ -98,7 +104,6 @@ public class ChatRoomActivity extends AppCompatActivity {
                     //insert in the database:
                     long newId = db.insert(MyDatabaseOpenHelper.TABLE_NAME, null, newRowValues);
                     chatText = new Message(textMessages, true, false, newId);
-//                    messages.add(chatText);
                     adapter.add(chatText);
                     mListView.setAdapter(adapter);
                     ((EditText) findViewById(R.id.chatType1)).setText(null);
@@ -127,7 +132,6 @@ public class ChatRoomActivity extends AppCompatActivity {
                     //insert in the database:
                     long newId = db.insert(MyDatabaseOpenHelper.TABLE_NAME, null, newRowValues);
                     chatText = new Message(textMessages, false, true, newId);
-//                    messages.add(chatText);
                     adapter.add(chatText);
                     mListView.setAdapter(adapter);
                     ((EditText) findViewById(R.id.chatType1)).setText(null);
@@ -141,49 +145,20 @@ public class ChatRoomActivity extends AppCompatActivity {
 //             if(!c.isBeforeFirst())
              printCursor(c);
 
-        // CREATE THE ADAPTER USING THE CURSOR POINTING TO THE DESIRED DATA AS WELL AS THE LAYOUT INFORMATION
-        //and SET THIS ADAPTER AS YOUR LISTACTIVITY'S ADAPTER
-        mListView.setAdapter(new SimpleCursorAdapter (this, android.R.layout.simple_list_item_1, results, columns, to, 0));
 
 
     }
 
-    private static int ACTIVITY_PROFILE_ACTIVITY = 33;
-    private static int ACTIVITY_CHAT_ROOM=34;
 
-
-//    @Override
+//    private static int ACTIVITY_PROFILE_ACTIVITY = 33;
+//    private static int ACTIVITY_CHAT_ROOM=34;
+//
+//   @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        //If you're coming back from the view contact activity
-//        if (requestCode == ACTIVITY_CHAT_ROOM  && resultCode == ACTIVITY_PROFILE_ACTIVITY) {
-//            this.;
-//        }
+//         super.startActivityForResult(intent, requestCode);
+//        if(requestCode==34)
+//            mListView.setAdapter(simplecursor);
 //        Log.e(ACTIVITY_NAME, "In function:" + "onActivityResult Function");
-//    }
-//
-
-
-
-
-
-
-
-//            switch(resultCode) {
-//                //if you clicked delete, remove the item you clicked from the array list and update the listview:
-//                case ViewContact.PUSHED_DELETE:
-//                    contactsList.remove(positionClicked);
-//                    myAdapter.notifyDataSetChanged();
-//                    break;
-//
-//                //if you clicked update, then the other activity should have sent back the new name and email in the Intent object:
-//                //update the selected object and update the listView:
-//                case ViewContact.PUSHED_UPDATE:
-//                    Contact oldContact = contactsList.get(positionClicked);
-//                    oldContact.update(data.getStringExtra("Name"), data.getStringExtra("Email"));
-//                    myAdapter.notifyDataSetChanged();
-//                    break;
-//            }
-//        }
 //    }
 
 
@@ -220,7 +195,6 @@ public class ChatRoomActivity extends AppCompatActivity {
        }
 
    }
-
 
 
 }

@@ -53,6 +53,11 @@ public class ProfileActivity extends AppCompatActivity {
         chatButton.setOnClickListener(btn -> {
             chatIntent = new Intent(ProfileActivity.this, ChatRoomActivity.class);
             startActivity(chatIntent);
+
+
+//            startActivityForResult(chatIntent,34);
+
+
         });
     }
 
@@ -96,18 +101,23 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
 
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             imageButton2.setImageBitmap(imageBitmap);
         }
-        Log.e(ACTIVITY_NAME, "In function:"+"onActivityResult Function");
+
+
+        {
+            Log.e(ACTIVITY_NAME, "In function:" + "onActivityResult Function");
+        }
+
     }
-
-
 
 
 }
