@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyOwnAdapter extends BaseAdapter
-{
+{   TextView messageBody;
     List<Message> messagesText = new ArrayList<Message>();
     Context context;
 
@@ -41,27 +41,22 @@ public class MyOwnAdapter extends BaseAdapter
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
 
-        MessageViewHolder holder = new MessageViewHolder();
         LayoutInflater messageInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         Message message = messagesText.get(position);
 
         if (message.isSent()) {
             convertView = messageInflater.inflate(R.layout.right_row, null);
-            holder.messageBody = (TextView) convertView.findViewById(R.id.right_row_text);
-            convertView.setTag(holder);
-            holder.messageBody.setText(message.getMessageText());
+            messageBody = (TextView) convertView.findViewById(R.id.right_row_text);
+            convertView.setTag(messageBody);
+            messageBody.setText(message.getMessageText());
         } else {
             convertView = messageInflater.inflate(R.layout.left_row, null);
-            holder.messageBody = (TextView) convertView.findViewById(R.id.left_row_text);
-            convertView.setTag(holder);
-            holder.messageBody.setText(message.getMessageText());
+            messageBody = (TextView) convertView.findViewById(R.id.left_row_text);
+            convertView.setTag(messageBody);
+            messageBody.setText(message.getMessageText());
         }
 
         return convertView;
 
-        }
-}
-
-class MessageViewHolder {
-       public TextView messageBody;
+    }
 }
