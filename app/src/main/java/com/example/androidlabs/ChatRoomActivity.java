@@ -30,7 +30,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         text = (EditText) findViewById(R.id.chatType1);
         buttonSend = (Button) findViewById(R.id.buttonSend);
         buttonRecv = (Button) findViewById(R.id.buttonRecv);
-        Log.d(TAG,"onCreate: Started.");
+        Log.d(TAG, "onCreate: Started.");
         mListView = (ListView) findViewById(R.id.list1);
 
         messages = new ArrayList<Message>();
@@ -40,11 +40,9 @@ public class ChatRoomActivity extends AppCompatActivity {
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chatText = new Message(text.getText().toString(), true,false);
-                messages.add(chatText);
+                chatText = new Message(text.getText().toString(), true, false);
                 adapter.add(chatText);
-                mListView.setAdapter(adapter);
-                ((EditText)findViewById(R.id.chatType1)).setText(null);
+                ((EditText) findViewById(R.id.chatType1)).setText(null);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -52,13 +50,12 @@ public class ChatRoomActivity extends AppCompatActivity {
         buttonRecv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chatText = new Message(text.getText().toString(),false,true);
-                messages.add(chatText);
+                chatText = new Message(text.getText().toString(), false, true);
                 adapter.add(chatText);
-                mListView.setAdapter(adapter);
-                ((EditText)findViewById(R.id.chatType1)).setText(null);
+                ((EditText) findViewById(R.id.chatType1)).setText(null);
                 adapter.notifyDataSetChanged();
             }
         });
+        mListView.setAdapter(adapter);
     }
 }
