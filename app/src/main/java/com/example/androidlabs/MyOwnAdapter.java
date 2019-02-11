@@ -35,7 +35,7 @@ public class MyOwnAdapter extends BaseAdapter
     @Override
     public long getItemId(int position)
     {
-        return position;
+        return messagesText.get(position).getId();
     }
 
     @Override

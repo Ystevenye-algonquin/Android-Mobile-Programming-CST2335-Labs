@@ -6,8 +6,6 @@ public class Message {
     private boolean received;
     long id;
 
-
-
     public Message(String messageText, boolean sent, boolean received) {
         this(messageText,sent,received,0);
 
@@ -33,8 +31,6 @@ public class Message {
     public void setMessageText(String messageText) {
         this.messageText = messageText;
     }
-
-
 
     public boolean isSent() {
         return sent;

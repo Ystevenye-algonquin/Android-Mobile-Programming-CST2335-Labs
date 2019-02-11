@@ -8,13 +8,12 @@ import android.util.Log;
 
 public class MyDatabaseOpenHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "MyDatabaseFile";
-    public static final int VERSION_NUM = 1;
+    public static final int VERSION_NUM = 3;
     public static final String TABLE_NAME = "ChatMessages";
     public static final String COL_ID = "_id";
     public static final String COL_SENT = "SENT";
     public static final String COL_RECEIVED = "RECEIVED";
     public static final String COL_TEXT_MESSAGE = "TEXT_MESSAGE";
-
 
     public MyDatabaseOpenHelper(Activity ctx){
         //The factory parameter should be null, unless you know a lot about Database Memory management

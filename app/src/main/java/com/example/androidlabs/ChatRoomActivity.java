@@ -43,7 +43,6 @@ public class ChatRoomActivity extends AppCompatActivity {
         Log.d(TAG,"onCreate: Started.");
         mListView = (ListView) findViewById(R.id.list1);
 
-
         //get a database:
          dbOpener = new MyDatabaseOpenHelper(this);
          db = dbOpener.getWritableDatabase();
@@ -52,9 +51,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         String [] columns = {MyDatabaseOpenHelper.COL_ID, MyDatabaseOpenHelper.COL_SENT,MyDatabaseOpenHelper.COL_RECEIVED, MyDatabaseOpenHelper.COL_TEXT_MESSAGE};
         Cursor results = db.query(false, MyDatabaseOpenHelper.TABLE_NAME, columns, null, null, null, null, null, null);
 
-
-
-
+        adapter =  new MyOwnAdapter(this);
 
         //find the column indices:
         int sent_ColumnIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_SENT);
@@ -69,36 +66,8 @@ public class ChatRoomActivity extends AppCompatActivity {
             String text_message_col = results.getString(text_message_ColIndex);
             long id_col = results.getLong(idColIndex);
 
-
-            //add the new Contact to the array list:
-            messages = new ArrayList<Message>();
-            if (sent_col.equals("Sent")) {
-                messages.add(new Message(text_message_col, true, false, id_col));
-            }
-            if (received_col.equals("Received")) {
-                messages.add(new Message(text_message_col, false, true, id_col));
-            }
-
-            //**************************************************************
-            Cursor c1 = db.rawQuery("SELECT * from " + MyDatabaseOpenHelper.TABLE_NAME, null);
-            int[] to = new int[]{ R.id.left_row_text, R.id.right_row_text };
-            if (sent_col.equals("Sent")) {
-
-                simplecursor = new SimpleCursorAdapter(this, R.layout.left_row, c1, columns, to, 0);
-            }
-            if (sent_col.equals("Received")) {
-
-                simplecursor = new SimpleCursorAdapter(this, R.layout.right_row, c1, columns, to, 0);
-            }
-
-            mListView.setAdapter(simplecursor);
-//**************************************************************
-
+            adapter.add(new Message(text_message_col, sent_col.equals("Sent"), false, id_col));
         }
-
-
-            adapter = new MyOwnAdapter(this);
-
             buttonSend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -118,14 +87,11 @@ public class ChatRoomActivity extends AppCompatActivity {
                     long newId = db.insert(MyDatabaseOpenHelper.TABLE_NAME, null, newRowValues);
                     chatText = new Message(textMessages, true, false, newId);
                     adapter.add(chatText);
-                    mListView.setAdapter(adapter);
+
                     ((EditText) findViewById(R.id.chatType1)).setText(null);
                     adapter.notifyDataSetChanged();
                 }
-
-
             });
-
 
             buttonRecv.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -146,34 +112,18 @@ public class ChatRoomActivity extends AppCompatActivity {
                     long newId = db.insert(MyDatabaseOpenHelper.TABLE_NAME, null, newRowValues);
                     chatText = new Message(textMessages, false, true, newId);
                     adapter.add(chatText);
-                    mListView.setAdapter(adapter);
+
                     ((EditText) findViewById(R.id.chatType1)).setText(null);
                     adapter.notifyDataSetChanged();
                 }
-
-
             });
 
             Cursor c = db.rawQuery("SELECT * from " + MyDatabaseOpenHelper.TABLE_NAME, null);
-//             if(!c.isBeforeFirst())
              printCursor(c);
 
-
+        mListView.setAdapter(adapter);
 
     }
-
-
-//    private static int ACTIVITY_PROFILE_ACTIVITY = 33;
-//    private static int ACTIVITY_CHAT_ROOM=34;
-//
-//   @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//         super.startActivityForResult(intent, requestCode);
-//        if(requestCode==34)
-//            mListView.setAdapter(simplecursor);
-//        Log.e(ACTIVITY_NAME, "In function:" + "onActivityResult Function");
-//    }
-
 
    public void printCursor( Cursor c) {
 
@@ -182,7 +132,6 @@ public class ChatRoomActivity extends AppCompatActivity {
        int colIndex2 = c.getColumnIndex(MyDatabaseOpenHelper.COL_RECEIVED);
        int colIndex3 = c.getColumnIndex(MyDatabaseOpenHelper.COL_TEXT_MESSAGE);
        Log.e("******Database Version:", String.valueOf(MyDatabaseOpenHelper.VERSION_NUM));
-       c.moveToFirst();
        c.moveToFirst();
        Log.e("******Number of columns", String.valueOf(c.getColumnCount()));
        c.moveToFirst();
@@ -206,8 +155,5 @@ public class ChatRoomActivity extends AppCompatActivity {
                Log.e("******Result " + (i + 1) + " is", "ID "+id + e_word + r);
            c.moveToNext();
        }
-
    }
-
-
 }
