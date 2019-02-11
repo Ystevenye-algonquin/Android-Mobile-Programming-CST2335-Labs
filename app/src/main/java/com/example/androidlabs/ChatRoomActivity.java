@@ -53,31 +53,8 @@ public class ChatRoomActivity extends AppCompatActivity {
         Cursor results = db.query(false, MyDatabaseOpenHelper.TABLE_NAME, columns, null, null, null, null, null, null);
 
 
-//**************************************************************
-//        int[] to = new int[]{ R.id.left_row_text, R.id.right_row_text };
-//        simplecursor = new SimpleCursorAdapter (this, android.R.layout.simple_list_item_1, results, columns, to, 0);
-//        mListView.setAdapter(simplecursor);
-//**************************************************************
-// TodoDatabaseHandler is a SQLiteOpenHelper class connecting to SQLite
-        MyDatabaseOpenHelper handler = new MyDatabaseOpenHelper (this);
-        SQLiteDatabase db1 = handler.getWritableDatabase();
-// Get access to the underlying writeable database
-
-// Query for items from the database and get a cursor back
-        Cursor co = db1.rawQuery("SELECT * from " + MyDatabaseOpenHelper.TABLE_NAME, null);
 
 
-        // Find ListView to populate
-        ListView lvItems = (ListView) findViewById(R.id.list1);
-// Setup cursor adapter using cursor from last step
-        MyCursorAdapter todoAdapter = new MyCursorAdapter(this, co);
-// Attach cursor adapter to the ListView
-        lvItems.setAdapter(todoAdapter);
-
-        todoAdapter.changeCursor(co);
-
-
-//**************************************************************
 
         //find the column indices:
         int sent_ColumnIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_SENT);
@@ -102,7 +79,24 @@ public class ChatRoomActivity extends AppCompatActivity {
                 messages.add(new Message(text_message_col, false, true, id_col));
             }
 
+            //**************************************************************
+            Cursor c1 = db.rawQuery("SELECT * from " + MyDatabaseOpenHelper.TABLE_NAME, null);
+            int[] to = new int[]{ R.id.left_row_text, R.id.right_row_text };
+            if (sent_col.equals("Sent")) {
+
+                simplecursor = new SimpleCursorAdapter(this, R.layout.left_row, c1, columns, to, 0);
+            }
+            if (sent_col.equals("Received")) {
+
+                simplecursor = new SimpleCursorAdapter(this, R.layout.right_row, c1, columns, to, 0);
+            }
+
+            mListView.setAdapter(simplecursor);
+//**************************************************************
+
         }
+
+
             adapter = new MyOwnAdapter(this);
 
             buttonSend.setOnClickListener(new View.OnClickListener() {
