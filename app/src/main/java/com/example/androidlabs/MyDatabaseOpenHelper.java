@@ -26,7 +26,7 @@ public class MyDatabaseOpenHelper extends SQLiteOpenHelper {
         //Make sure you put spaces between SQL statements and Java strings:
         db.execSQL("CREATE TABLE " + TABLE_NAME + "( "
                 + COL_ID +" INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + COL_SENT + " BOOLEAN, "+ COL_RECEIVED + " BOOLEAN, " + COL_TEXT_MESSAGE + " TEXT)");
+                + COL_SENT + " TEXT, "+ COL_RECEIVED + " TEXT, " + COL_TEXT_MESSAGE + " TEXT)");
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)

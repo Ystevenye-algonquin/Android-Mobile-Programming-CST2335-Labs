@@ -2,6 +2,7 @@ package com.example.androidlabs;
 
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -11,13 +12,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
 
 import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.androidlabs.ProfileActivity.ACTIVITY_NAME;
 
 public class ChatRoomActivity extends AppCompatActivity {
     private static final String TAG = "ChatRoomActivity";
-    ArrayList<Message> messages;
+    List<Message> messages;
     MyOwnAdapter adapter;
     Message chatText;
     ListView mListView;
@@ -46,6 +51,8 @@ public class ChatRoomActivity extends AppCompatActivity {
         //query all the results from the database:
         String [] columns = {MyDatabaseOpenHelper.COL_ID, MyDatabaseOpenHelper.COL_SENT,MyDatabaseOpenHelper.COL_RECEIVED, MyDatabaseOpenHelper.COL_TEXT_MESSAGE};
         Cursor results = db.query(false, MyDatabaseOpenHelper.TABLE_NAME, columns, null, null, null, null, null, null);
+        // THE XML DEFINED VIEWS WHICH THE DATA WILL BE BOUND TO
+        int[] to = new int[] { R.id.left_row_text, R.id.right_row_text };
 
         //find the column indices:
         int sent_ColumnIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_SENT);
@@ -63,10 +70,10 @@ public class ChatRoomActivity extends AppCompatActivity {
 
             //add the new Contact to the array list:
             messages = new ArrayList<Message>();
-            if (sent_col.equals("1")) {
+            if (sent_col.equals("Sent")) {
                 messages.add(new Message(text_message_col, true, false, id_col));
             }
-            if (received_col.equals("1")) {
+            if (received_col.equals("Received")) {
                 messages.add(new Message(text_message_col, false, true, id_col));
             }
 
@@ -78,34 +85,37 @@ public class ChatRoomActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     //get the textMessages that were typed
                     String textMessages = text.getText().toString();
-                    String sent = "1";
-                    String received = "0";
+                    String sent = "Sent";
+                    String received = "";
                     //add to the database and get the new ID
                     ContentValues newRowValues = new ContentValues();
                     //put string text_message in the COL_TEXT_MESSAGE column:
                     newRowValues.put(MyDatabaseOpenHelper.COL_TEXT_MESSAGE, textMessages);
                     //put string sent in the COL_SENT column:
                     newRowValues.put(MyDatabaseOpenHelper.COL_SENT, sent);
-                    //put string received in the COL_RECEIVE column:
+                    //put string received in the COL_RECEIVED column:
                     newRowValues.put(MyDatabaseOpenHelper.COL_RECEIVED, received);
                     //insert in the database:
                     long newId = db.insert(MyDatabaseOpenHelper.TABLE_NAME, null, newRowValues);
-                    chatText = new Message(textMessages, true,false, newId);
-                    messages.add(chatText);
+                    chatText = new Message(textMessages, true, false, newId);
+//                    messages.add(chatText);
                     adapter.add(chatText);
                     mListView.setAdapter(adapter);
-                    ((EditText)findViewById(R.id.chatType1)).setText(null);
+                    ((EditText) findViewById(R.id.chatType1)).setText(null);
                     adapter.notifyDataSetChanged();
                 }
+
+
             });
+
 
             buttonRecv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //get the textMessages that were typed
                     String textMessages = text.getText().toString();
-                    String received = "1";
-                    String sent = "0";
+                    String sent = "";
+                    String received = "Received";
                     //add to the database and get the new ID
                     ContentValues newRowValues = new ContentValues();
                     //put string text_message in the COL_TEXT_MESSAGE column:
@@ -114,23 +124,68 @@ public class ChatRoomActivity extends AppCompatActivity {
                     newRowValues.put(MyDatabaseOpenHelper.COL_RECEIVED, received);
                     //put string sent in the COL_SENT column:
                     newRowValues.put(MyDatabaseOpenHelper.COL_SENT, sent);
-                     //insert in the database:
+                    //insert in the database:
                     long newId = db.insert(MyDatabaseOpenHelper.TABLE_NAME, null, newRowValues);
-                    chatText = new Message(textMessages, false,true, newId);
-                    messages.add(chatText);
+                    chatText = new Message(textMessages, false, true, newId);
+//                    messages.add(chatText);
                     adapter.add(chatText);
                     mListView.setAdapter(adapter);
-                    ((EditText)findViewById(R.id.chatType1)).setText(null);
+                    ((EditText) findViewById(R.id.chatType1)).setText(null);
                     adapter.notifyDataSetChanged();
                 }
+
+
             });
 
+            Cursor c = db.rawQuery("SELECT * from " + MyDatabaseOpenHelper.TABLE_NAME, null);
+//             if(!c.isBeforeFirst())
+             printCursor(c);
 
-        Cursor c = db.rawQuery("SELECT * from " + MyDatabaseOpenHelper.TABLE_NAME, null);
-        if(!c.isBeforeFirst())
-        printCursor(c);
+        // CREATE THE ADAPTER USING THE CURSOR POINTING TO THE DESIRED DATA AS WELL AS THE LAYOUT INFORMATION
+        //and SET THIS ADAPTER AS YOUR LISTACTIVITY'S ADAPTER
+        mListView.setAdapter(new SimpleCursorAdapter (this, android.R.layout.simple_list_item_1, results, columns, to, 0));
 
-            }
+
+    }
+
+    private static int ACTIVITY_PROFILE_ACTIVITY = 33;
+    private static int ACTIVITY_CHAT_ROOM=34;
+
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        //If you're coming back from the view contact activity
+//        if (requestCode == ACTIVITY_CHAT_ROOM  && resultCode == ACTIVITY_PROFILE_ACTIVITY) {
+//            this.;
+//        }
+//        Log.e(ACTIVITY_NAME, "In function:" + "onActivityResult Function");
+//    }
+//
+
+
+
+
+
+
+
+//            switch(resultCode) {
+//                //if you clicked delete, remove the item you clicked from the array list and update the listview:
+//                case ViewContact.PUSHED_DELETE:
+//                    contactsList.remove(positionClicked);
+//                    myAdapter.notifyDataSetChanged();
+//                    break;
+//
+//                //if you clicked update, then the other activity should have sent back the new name and email in the Intent object:
+//                //update the selected object and update the listView:
+//                case ViewContact.PUSHED_UPDATE:
+//                    Contact oldContact = contactsList.get(positionClicked);
+//                    oldContact.update(data.getStringExtra("Name"), data.getStringExtra("Email"));
+//                    myAdapter.notifyDataSetChanged();
+//                    break;
+//            }
+//        }
+//    }
+
 
    public void printCursor( Cursor c) {
 
@@ -150,17 +205,17 @@ public class ChatRoomActivity extends AppCompatActivity {
        c.moveToFirst();
        Log.e("******Number of results", String.valueOf(c.getCount()));
        c.moveToFirst();
-       String n_word = new String("Sent");
-       String e_word = new String ("Received");
+       String n_word = new String(" SENT: ");
+       String e_word = new String (" RECEIVED: ");
        for (int i = 0; i < c.getCount(); i++) {
            String id = c.getString(colIndex0);
            String n = c.getString(colIndex1);
            String e = c.getString(colIndex2);
            String r = c.getString(colIndex3);
-           if (n.equals("1"))
-           Log.e("******Result " + (i + 1) + " is", id + " " + n_word + " " + r);
-           if (n.equals("0"))
-               Log.e("******Result " + (i + 1) + " is", id + " " + e_word + " " + r);
+           if (n.equals("Sent"))
+           Log.e("******Result " + (i + 1) + " is", "ID "+id + n_word + r);
+           if (e.equals("Received"))
+               Log.e("******Result " + (i + 1) + " is", "ID "+id + e_word + r);
            c.moveToNext();
        }
 

@@ -6,18 +6,25 @@ public class Message {
     private boolean received;
     long id;
 
-    public Message(String messageText, boolean sent, boolean received, long id) {
-        setMessageText(messageText);
-        setReceived(received);
-        setSent(sent);
-        setId(id);
 
-    }
 
     public Message(String messageText, boolean sent, boolean received) {
         this(messageText,sent,received,0);
 
     }
+    public Message() {
+        messageText = "";
+        sent = true;
+        received = false;
+        id = 1;
+    }
+    public Message(String messageText, boolean sent, boolean received, long id) {
+        this.messageText = messageText;
+        this.sent = sent;
+        this.received = received;
+        this.id = id;
+    }
+
     public String getMessageText() {
         return messageText;
 
