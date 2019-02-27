@@ -1,12 +1,12 @@
 package com.example.androidlabs;
 
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +20,7 @@ import java.util.List;
 
 import static com.example.androidlabs.ProfileActivity.ACTIVITY_NAME;
 
-public class ChatRoomActivity extends AppCompatActivity {
+public class ChatRoomActivity extends Activity {
     private static final String TAG = "ChatRoomActivity";
     List<Message> messages;
     MyOwnAdapter adapter;

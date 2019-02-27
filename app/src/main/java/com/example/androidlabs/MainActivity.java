@@ -48,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
+
     protected void onPause () {
         super.onPause();
         SharedPreferences.Editor edit = sp.edit();
