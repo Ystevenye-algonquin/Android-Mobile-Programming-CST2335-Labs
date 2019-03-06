@@ -16,7 +16,9 @@ public class ProfileActivity extends AppCompatActivity {
     public static final String ACTIVITY_NAME = "PROFILE_ACTIVITY";
     static final int REQUEST_IMAGE_CAPTURE = 1;
     Intent chatIntent;
+    Intent toolBarIntent;
     Button chatButton;
+    Button toolBarButton;
     ImageButton imageButton2;
     TextView emailInput2;
 
@@ -55,9 +57,11 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(chatIntent);
 
 
-
-//            startActivityForResult(chatIntent,34);
-
+        });
+        toolBarButton = (Button) findViewById(R.id.Toolbarbutton);
+        toolBarButton.setOnClickListener(btn -> {
+            toolBarIntent = new Intent(ProfileActivity.this, TestToolbar.class);
+            startActivity(toolBarIntent);
 
         });
     }

@@ -16,4 +16,10 @@
     <string name="click">Click the button above to take a picture</string>
     <string name="hint_email1">Enter your email </string>
     <string name="hint_name">Enter your name </string>
+    <string name="icon_1">Choice1 </string>
+    <string name="icon_2">Choice2</string>
+    <string name="icon_3">Choice3</string>
+    <string name="icon_4">About</string>
+    <string name="Toolbarbutton">Go to ToolBar Page</string>
+
 </resources>
