@@ -17,8 +17,10 @@ public class ProfileActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     Intent chatIntent;
     Intent toolBarIntent;
+    Intent weatherForcastIntent;
     Button chatButton;
     Button toolBarButton;
+    Button weatherForcastButton;
     ImageButton imageButton2;
     TextView emailInput2;
 
@@ -58,6 +60,13 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         });
+        weatherForcastButton = (Button) findViewById(R.id.weatherForcastButton);
+        weatherForcastButton.setOnClickListener(btn -> {
+            weatherForcastIntent = new Intent(ProfileActivity.this, WeatherForecast.class);
+            startActivity(weatherForcastIntent);
+
+        });
+
         toolBarButton = (Button) findViewById(R.id.Toolbarbutton);
         toolBarButton.setOnClickListener(btn -> {
             toolBarIntent = new Intent(ProfileActivity.this, TestToolbar.class);

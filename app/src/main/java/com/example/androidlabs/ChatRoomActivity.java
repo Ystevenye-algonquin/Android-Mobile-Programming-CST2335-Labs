@@ -1,6 +1,5 @@
 package com.example.androidlabs;
 
-
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -12,26 +11,31 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-
-
+import android.app.FragmentTransaction;
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import java.util.ArrayList;
-import java.util.List;
-
 import static com.example.androidlabs.ProfileActivity.ACTIVITY_NAME;
 
 public class ChatRoomActivity extends Activity {
     private static final String TAG = "ChatRoomActivity";
-    List<Message> messages;
-    MyOwnAdapter adapter;
-    Message chatText;
+
+
     ListView mListView;
-    Button buttonRecv;
+
     Button buttonSend;
     EditText text;
     SQLiteDatabase db;
     MyDatabaseOpenHelper dbOpener;
-    SimpleCursorAdapter simplecursor;
+
+    protected boolean isTablet;
+    ArrayList<Long> chatIDs;
+    ArrayList<String> chatMsgs;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -39,121 +43,142 @@ public class ChatRoomActivity extends Activity {
         setContentView(R.layout.activity_chat_room);
         text = (EditText) findViewById(R.id.chatType1);
         buttonSend = (Button) findViewById(R.id.buttonSend);
-        buttonRecv = (Button) findViewById(R.id.buttonRecv);
+
         Log.d(TAG,"onCreate: Started.");
         mListView = (ListView) findViewById(R.id.list1);
+        chatMsgs = new ArrayList<>();
+        chatIDs = new ArrayList<>();
 
         //get a database:
          dbOpener = new MyDatabaseOpenHelper(this);
          db = dbOpener.getWritableDatabase();
-
+        final Message messageAdapter = new Message(this);
+        mListView.setAdapter(messageAdapter);
+        isTablet = (findViewById(R.id.fragmentLocation) != null);
         //query all the results from the database:
-        String [] columns = {MyDatabaseOpenHelper.COL_ID, MyDatabaseOpenHelper.COL_SENT,MyDatabaseOpenHelper.COL_RECEIVED, MyDatabaseOpenHelper.COL_TEXT_MESSAGE};
+        String [] columns = {MyDatabaseOpenHelper.COL_ID, MyDatabaseOpenHelper.COL_TEXT_MESSAGE};
         Cursor results = db.query(false, MyDatabaseOpenHelper.TABLE_NAME, columns, null, null, null, null, null, null);
-
-        adapter =  new MyOwnAdapter(this);
-
-        //find the column indices:
-        int sent_ColumnIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_SENT);
-        int received_ColumnIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_RECEIVED);
+       //find the column indices:
         int text_message_ColIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_TEXT_MESSAGE);
         int idColIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_ID);
 
-        //iterate over the results, return true if there is a next item:
         while(results.moveToNext()) {
-            String sent_col = results.getString(sent_ColumnIndex);
-            String received_col = results.getString(received_ColumnIndex);
-            String text_message_col = results.getString(text_message_ColIndex);
-            long id_col = results.getLong(idColIndex);
-
-            adapter.add(new Message(text_message_col, sent_col.equals("Sent"), false, id_col));
+           chatMsgs.add(results.getString(text_message_ColIndex));
+           chatIDs.add(results.getLong(idColIndex));
         }
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                Bundle newBundle = new Bundle();
+                newBundle.putString("message", messageAdapter.getItem(position));
+                newBundle.putLong("id", messageAdapter.getId(position));
+                // Action if tablet
+                if (isTablet)
+                {
+                    MessageFragment messageFragment = new MessageFragment(ChatRoomActivity.this);
+                    messageFragment.setArguments(newBundle);
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.fragmentLocation, messageFragment);
+                    ft.commit();
+                }
+                else
+                {
+                    Intent msgDetailsIntent = new Intent(getApplicationContext(), MessageDetails.class);
+                    msgDetailsIntent.putExtras(newBundle);
+                    startActivityForResult(msgDetailsIntent,CONTEXT_INCLUDE_CODE);
+                }
+            }
+        });
             buttonSend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //get the textMessages that were typed
-                    String textMessages = text.getText().toString();
-                    String sent = "Sent";
-                    String received = "";
-                    //add to the database and get the new ID
-                    ContentValues newRowValues = new ContentValues();
-                    //put string text_message in the COL_TEXT_MESSAGE column:
-                    newRowValues.put(MyDatabaseOpenHelper.COL_TEXT_MESSAGE, textMessages);
-                    //put string sent in the COL_SENT column:
-                    newRowValues.put(MyDatabaseOpenHelper.COL_SENT, sent);
-                    //put string received in the COL_RECEIVED column:
-                    newRowValues.put(MyDatabaseOpenHelper.COL_RECEIVED, received);
-                    //insert in the database:
-                    long newId = db.insert(MyDatabaseOpenHelper.TABLE_NAME, null, newRowValues);
-                    chatText = new Message(textMessages, true, false, newId);
-                    adapter.add(chatText);
+                    if (!text.getText().toString().trim().equals("")) {
 
-                    ((EditText) findViewById(R.id.chatType1)).setText(null);
-                    adapter.notifyDataSetChanged();
+                        chatMsgs.add(text.getText().toString());
+                        ContentValues newRowValues = new ContentValues();
+                        newRowValues.put(MyDatabaseOpenHelper.COL_TEXT_MESSAGE, text.getText().toString());
+                        chatIDs.add(db.insert(MyDatabaseOpenHelper.TABLE_NAME, null, newRowValues));
+                        messageAdapter.notifyDataSetChanged();
+                        ((EditText) findViewById(R.id.chatType1)).setText(null);
+                    }
                 }
             });
-
-            buttonRecv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //get the textMessages that were typed
-                    String textMessages = text.getText().toString();
-                    String sent = "";
-                    String received = "Received";
-                    //add to the database and get the new ID
-                    ContentValues newRowValues = new ContentValues();
-                    //put string text_message in the COL_TEXT_MESSAGE column:
-                    newRowValues.put(MyDatabaseOpenHelper.COL_TEXT_MESSAGE, textMessages);
-                    //put string received in the COL_RECEIVE column:
-                    newRowValues.put(MyDatabaseOpenHelper.COL_RECEIVED, received);
-                    //put string sent in the COL_SENT column:
-                    newRowValues.put(MyDatabaseOpenHelper.COL_SENT, sent);
-                    //insert in the database:
-                    long newId = db.insert(MyDatabaseOpenHelper.TABLE_NAME, null, newRowValues);
-                    chatText = new Message(textMessages, false, true, newId);
-                    adapter.add(chatText);
-
-                    ((EditText) findViewById(R.id.chatType1)).setText(null);
-                    adapter.notifyDataSetChanged();
-                }
-            });
-
-            Cursor c = db.rawQuery("SELECT * from " + MyDatabaseOpenHelper.TABLE_NAME, null);
-             printCursor(c);
-
-        mListView.setAdapter(adapter);
-
     }
 
-   public void printCursor( Cursor c) {
+    public class Message extends ArrayAdapter<String>{
+        private String messageText;
+        private boolean sent;
+        private boolean received;
+        long id;
 
-       int colIndex0 = c.getColumnIndex(MyDatabaseOpenHelper.COL_ID);
-       int colIndex1 = c.getColumnIndex(MyDatabaseOpenHelper.COL_SENT);
-       int colIndex2 = c.getColumnIndex(MyDatabaseOpenHelper.COL_RECEIVED);
-       int colIndex3 = c.getColumnIndex(MyDatabaseOpenHelper.COL_TEXT_MESSAGE);
-       Log.e("******Database Version:", String.valueOf(MyDatabaseOpenHelper.VERSION_NUM));
-       c.moveToFirst();
-       Log.e("******Number of columns", String.valueOf(c.getColumnCount()));
-       c.moveToFirst();
-       for (int i = 0; i < c.getColumnCount(); i++) {
-           Log.e("******Name of column " + (i + 1) + " is", c.getColumnNames()[i]);
-           c.moveToNext();
-       }
-       c.moveToFirst();
-       Log.e("******Number of results", String.valueOf(c.getCount()));
-       c.moveToFirst();
-       String n_word = new String(" SENT: ");
-       String e_word = new String (" RECEIVED: ");
-       for (int i = 0; i < c.getCount(); i++) {
-           String id = c.getString(colIndex0);
-           String n = c.getString(colIndex1);
-           String e = c.getString(colIndex2);
-           String r = c.getString(colIndex3);
-           if (n.equals("Sent"))
-           Log.e("******Result " + (i + 1) + " is", "ID "+id + n_word + r);
-           if (e.equals("Received"))
-               Log.e("******Result " + (i + 1) + " is", "ID "+id + e_word + r);
-           c.moveToNext();
-       }
-   }
+        public Message(Context ctx)
+        {
+            super(ctx, 0);
+        }
+
+        public int getCount()
+        {
+            return chatMsgs.size();
+        }
+
+        public String getItem(int position)
+        {
+            return chatMsgs.get(position);
+        }
+
+        public long getId(int position)
+        {
+            return chatIDs.get(position);
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
+
+        @NonNull
+        public View getView(int position, View convertView, @NonNull ViewGroup parent)
+        {
+            LayoutInflater inflater = ChatRoomActivity.this.getLayoutInflater();
+            View result;
+            if (position % 2 == 0)
+            {
+                result = inflater.inflate(R.layout.left_row, null);
+            }
+            else
+            {
+                result = inflater.inflate(R.layout.right_row, null);
+            }
+            TextView message = (TextView) result.findViewById(R.id.message_text);
+            message.setText(getItem(position));
+            return result;
+        }
+    }
+
+    @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data)
+    {
+        if (resultCode == CONTEXT_INCLUDE_CODE)
+        {
+            Long msgID = data.getLongExtra("msgID",-1);
+            Log.i(ACTIVITY_NAME, "Request Deletion of message with id: " + Long.toString(msgID));
+            deleteItem(msgID);
+        }
+    }
+
+    public void deleteItem(long id)
+    {
+        db.delete(MyDatabaseOpenHelper.TABLE_NAME, MyDatabaseOpenHelper.COL_ID + "=" + id, null);
+
+        int position = chatIDs.indexOf(id);
+        chatMsgs.remove(position);
+        chatIDs.remove(position);
+
+        final Message adapter = (Message) mListView.getAdapter();
+        adapter.notifyDataSetChanged();
+    }
 }
+
+

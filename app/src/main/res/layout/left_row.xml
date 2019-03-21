@@ -8,13 +8,13 @@
     android:layout_alignParentLeft="true"
     >
 
-    <TextView android:id="@+id/left_row_text"
+    <TextView android:id="@+id/message_text"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:text=""
         android:layout_alignParentLeft="true"
         android:layout_centerHorizontal="true"
-        android:drawableLeft="@drawable/row_receive"
+        android:drawableLeft="@drawable/row_recv"
         />
 
 

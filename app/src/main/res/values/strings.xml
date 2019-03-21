@@ -21,5 +21,5 @@
     <string name="icon_3">Choice3</string>
     <string name="icon_4">About</string>
     <string name="Toolbarbutton">Go to ToolBar Page</string>
-
+    <string name="weatherForcastButton">Go to Weather Forcast Page</string>
 </resources>
